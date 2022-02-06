@@ -1,6 +1,6 @@
 {
   "name": "wordle-clone",
-  "homepage": "https://nichapman.github.io/Wordle-Clone/",
+  "homepage": "https://nichapman.github.io/wordle-clone/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
