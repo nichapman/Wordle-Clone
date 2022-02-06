@@ -1,4 +1,7 @@
 .LetterBox {
   border-style: solid;
   border-color: white;
+  color: white;
+  margin: 10px;
+  padding: 10px;
 }

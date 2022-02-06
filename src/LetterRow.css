@@ -1,5 +1,4 @@
 .LetterRow {
   display: flex;
-  background-color: brown;
   flex: auto;
 }
