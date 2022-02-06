@@ -4,14 +4,6 @@ object-assign
 @license MIT
 */
 
-/*!
-	unique-random
-	Generate random numbers that are consecutively unique
-	https://github.com/sindresorhus/unique-random
-	by Sindre Sorhus
-	MIT License
-*/
-
 /** @license React v0.20.2
  * scheduler.production.min.js
  *
