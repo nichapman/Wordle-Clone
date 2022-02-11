@@ -21,7 +21,9 @@ function App() {
   const [redGuesses, setRedGuesses] = useState("")
   const [yellowGuesses, setYellowGuesses] = useState("")
   const [greenGuesses, setGreenGuesses] = useState("")
-  
+
+  const [guessWordColours, setGuessWordColours] = useState("")
+
   const [firstGuess, setFirstGuess] = useState("")
   const [secondGuess, setSecondGuess] = useState("")
   const [thirdGuess, setThirdGuess] = useState("")
@@ -31,43 +33,56 @@ function App() {
  
   function handleWordChange(letter) {
     if (letter.length === 1) {
-      if (guessWord.length === 6) { return }
+      if (guessWord.length === 6) { return } //limit to 6 letters input
       setGuessWord(guessWord + letter)
     } else if (letter === "del") {
       setGuessWord(guessWord.slice(0, -1))
     } else if (letter === "enter") {
-      if (guessWord.length < 6) { return }
+      if (guessWord.length < 6) { return } //only allow guess when it's 6 letters long
       evaluateGuess(guessWord)
       setGuessWord("")
     }
   }
 
   function evaluateGuess(guessWord) {
-    //check if word in dictionary first?
+    //check if word in dictionary?
     
     let newGreenGuesses = ""
     let newYellowGuesses = ""
     let newRedGuesses = ""
+    let newGuessWordColours = ""
     let guessArray = Array.from(guessWord)
 
     for (let i = 0; i < guessArray.length; i++) { 
       let letter = guessArray[i]
       if (mysteryWord.includes(letter)) {
         if (mysteryWord[i] === guessArray[i]) {
+          newGuessWordColours += "G"
           newGreenGuesses += guessWord[i]
         } else {
+          newGuessWordColours += "Y"
           newYellowGuesses += guessWord[i]
         }
       } else {
+        newGuessWordColours += "R"
         newRedGuesses += guessWord[i]
       }
     }
 
+    setGuessWordColours(newGuessWordColours)
     setRedGuesses(redGuesses + newRedGuesses)
     setYellowGuesses(yellowGuesses + newYellowGuesses)
     setGreenGuesses(greenGuesses + newGreenGuesses)
 
+    if (guessWord === mysteryWord) {
+      console.log("WINNER")
+    }
+
     guessCount++
+
+    if (guessCount === 7) {
+      console.log("GAME OVER")
+    }
   }
 
   useEffect(() => {
@@ -91,12 +106,12 @@ function App() {
       {/* <div className="text-white text-3xl">mystery: {mysteryWord}</div> */}
 
       <div className="LetterGrid my-5">
-        <LetterRow guess={firstGuess}/>
-        <LetterRow guess={secondGuess}/>
-        <LetterRow guess={thirdGuess}/>
-        <LetterRow guess={fourthGuess}/>
-        <LetterRow guess={fifthGuess}/>
-        <LetterRow guess={sixthGuess}/>
+        <LetterRow letterColours={guessWordColours} guess={firstGuess}/>
+        <LetterRow letterColours={guessWordColours} guess={secondGuess}/>
+        <LetterRow letterColours={guessWordColours} guess={thirdGuess}/>
+        <LetterRow letterColours={guessWordColours} guess={fourthGuess}/>
+        <LetterRow letterColours={guessWordColours} guess={fifthGuess}/>
+        <LetterRow letterColours={guessWordColours} guess={sixthGuess}/>
       </div>
         
       <Keyboard onWordChange={handleWordChange} guesses={{redLetters: redGuesses, yellowLetters: yellowGuesses, greenLetters: greenGuesses}}/>
