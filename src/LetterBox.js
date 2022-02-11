@@ -3,6 +3,10 @@ function LetterBox(props) {
     var letterColour
     if (props.letterColour === "R") {
         letterColour = "bg-red-500"
+    } else if (props.letterColour === "Y") {
+        letterColour = "bg-yellow-500"
+    } else if (props.letterColour === "G") {
+        letterColour = "bg-green-500"
     }
 
     return (

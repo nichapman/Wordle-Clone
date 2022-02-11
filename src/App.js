@@ -22,7 +22,12 @@ function App() {
   const [yellowGuesses, setYellowGuesses] = useState("")
   const [greenGuesses, setGreenGuesses] = useState("")
 
-  const [guessWordColours, setGuessWordColours] = useState("")
+  const [firstGuessWordColours, setFirstGuessWordColours] = useState("")
+  const [secondGuessWordColours, setSecondGuessWordColours] = useState("")
+  const [thirdGuessWordColours, setThirdGuessWordColours] = useState("")
+  const [fourthGuessWordColours, setFourthGuessWordColours] = useState("")
+  const [fifthGuessWordColours, setFifthGuessWordColours] = useState("")
+  const [sixthGuessWordColours, setSixthGuessWordColours] = useState("")
 
   const [firstGuess, setFirstGuess] = useState("")
   const [secondGuess, setSecondGuess] = useState("")
@@ -69,7 +74,20 @@ function App() {
       }
     }
 
-    setGuessWordColours(newGuessWordColours)
+    if (guessCount === 1) {
+      setFirstGuessWordColours(newGuessWordColours)
+    } else if (guessCount === 2) {
+      setSecondGuessWordColours(newGuessWordColours)
+    } else if (guessCount === 3) {
+      setThirdGuessWordColours(newGuessWordColours)
+    } else if (guessCount === 4) {
+      setFourthGuessWordColours(newGuessWordColours)
+    } else if (guessCount === 5) {
+      setFifthGuessWordColours(newGuessWordColours)
+    } else if (guessCount === 6) {
+      setSixthGuessWordColours(newGuessWordColours)
+    } 
+
     setRedGuesses(redGuesses + newRedGuesses)
     setYellowGuesses(yellowGuesses + newYellowGuesses)
     setGreenGuesses(greenGuesses + newGreenGuesses)
@@ -103,15 +121,13 @@ function App() {
 
   return (
     <div className="App">
-      {/* <div className="text-white text-3xl">mystery: {mysteryWord}</div> */}
-
       <div className="LetterGrid my-5">
-        <LetterRow letterColours={guessWordColours} guess={firstGuess}/>
-        <LetterRow letterColours={guessWordColours} guess={secondGuess}/>
-        <LetterRow letterColours={guessWordColours} guess={thirdGuess}/>
-        <LetterRow letterColours={guessWordColours} guess={fourthGuess}/>
-        <LetterRow letterColours={guessWordColours} guess={fifthGuess}/>
-        <LetterRow letterColours={guessWordColours} guess={sixthGuess}/>
+        <LetterRow letterColours={firstGuessWordColours} guess={firstGuess}/>
+        <LetterRow letterColours={secondGuessWordColours} guess={secondGuess}/>
+        <LetterRow letterColours={thirdGuessWordColours} guess={thirdGuess}/>
+        <LetterRow letterColours={fourthGuessWordColours} guess={fourthGuess}/>
+        <LetterRow letterColours={fifthGuessWordColours} guess={fifthGuess}/>
+        <LetterRow letterColours={sixthGuessWordColours} guess={sixthGuess}/>
       </div>
         
       <Keyboard onWordChange={handleWordChange} guesses={{redLetters: redGuesses, yellowLetters: yellowGuesses, greenLetters: greenGuesses}}/>
