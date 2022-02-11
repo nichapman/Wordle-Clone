@@ -2,7 +2,7 @@ import './App.css'
 import randomWords from 'random-word-by-length'
 import LetterRow from './LetterRow'
 import Keyboard from './Keyboard'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 
 var mysteryWord = generateWord().toUpperCase()
 var guessCount = 1
@@ -16,22 +16,29 @@ function generateWord() {
 }
 
 function App() {
-  const [word, setWord] = useState("")
-  //make guesses sets?
+  const [guessWord, setGuessWord] = useState("")
+
   const [redGuesses, setRedGuesses] = useState("")
   const [yellowGuesses, setYellowGuesses] = useState("")
   const [greenGuesses, setGreenGuesses] = useState("")
+  
+  const [firstGuess, setFirstGuess] = useState("")
+  const [secondGuess, setSecondGuess] = useState("")
+  const [thirdGuess, setThirdGuess] = useState("")
+  const [fourthGuess, setFourthGuess] = useState("")
+  const [fifthGuess, setFifthGuess] = useState("")
+  const [sixthGuess, setSixthGuess] = useState("")
  
   function handleWordChange(letter) {
     if (letter.length === 1) {
-      if (word.length === 6) { return }
-      setWord(word + letter)
+      if (guessWord.length === 6) { return }
+      setGuessWord(guessWord + letter)
     } else if (letter === "del") {
-      setWord(word.slice(0, -1))
-    } else {
-      if (word.length < 6) { return }
-      evaluateGuess(word)
-      setWord("")
+      setGuessWord(guessWord.slice(0, -1))
+    } else if (letter === "enter") {
+      if (guessWord.length < 6) { return }
+      evaluateGuess(guessWord)
+      setGuessWord("")
     }
   }
 
@@ -57,25 +64,39 @@ function App() {
     }
 
     setRedGuesses(redGuesses + newRedGuesses)
-    console.log(redGuesses)
     setYellowGuesses(yellowGuesses + newYellowGuesses)
-    console.log(yellowGuesses)
     setGreenGuesses(greenGuesses + newGreenGuesses)
-    console.log(greenGuesses)
+
+    guessCount++
   }
+
+  useEffect(() => {
+    if (guessCount === 1) {
+      setFirstGuess(guessWord)
+    } else if (guessCount === 2) {
+      setSecondGuess(guessWord)
+    } else if (guessCount === 3) {
+      setThirdGuess(guessWord)
+    } else if (guessCount === 4) {
+      setFourthGuess(guessWord)
+    } else if (guessCount === 5) {
+      setFifthGuess(guessWord)
+    } else if (guessCount === 6) {
+      setSixthGuess(guessWord)
+    } 
+  }, [guessWord])
 
   return (
     <div className="App">
-      <div className="text-white text-3xl">mystery: {mysteryWord}</div>
-      <div className="text-white text-3xl">guess: {word}</div>
+      {/* <div className="text-white text-3xl">mystery: {mysteryWord}</div> */}
 
       <div className="LetterGrid my-5">
-        <LetterRow />
-        <LetterRow />
-        <LetterRow />
-        <LetterRow />
-        <LetterRow />
-        <LetterRow />
+        <LetterRow guess={firstGuess}/>
+        <LetterRow guess={secondGuess}/>
+        <LetterRow guess={thirdGuess}/>
+        <LetterRow guess={fourthGuess}/>
+        <LetterRow guess={fifthGuess}/>
+        <LetterRow guess={sixthGuess}/>
       </div>
         
       <Keyboard onWordChange={handleWordChange} guesses={{redLetters: redGuesses, yellowLetters: yellowGuesses, greenLetters: greenGuesses}}/>
