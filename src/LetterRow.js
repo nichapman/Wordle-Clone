@@ -1,9 +1,8 @@
 import LetterBox from "./LetterBox";
-import './LetterRow.css';
 
 function LetterRow() {
     return (
-        <div className="LetterRow">
+        <div className="flex flex-auto">
             <LetterBox />
             <LetterBox />
             <LetterBox />
