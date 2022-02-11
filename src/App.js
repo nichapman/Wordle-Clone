@@ -1,18 +1,17 @@
 import './App.css'
-import randomWords from 'random-word-by-length'
 import LetterRow from './LetterRow'
 import Keyboard from './Keyboard'
 import {useEffect, useState} from 'react'
+import wordList from './six-letter-words'
 
 var mysteryWord = generateWord().toUpperCase()
 var guessCount = 1
+var gameOver = false
+var gameWon = false
 
 function generateWord() {
-  var word = ""
-  do {
-    word = randomWords(6)
-  } while (word.length !== 6)
-  return word
+  let i = Math.floor(Math.random() * wordList.words.length);
+  return wordList.words[i]
 }
 
 function App() {
@@ -93,13 +92,13 @@ function App() {
     setGreenGuesses(greenGuesses + newGreenGuesses)
 
     if (guessWord === mysteryWord) {
-      console.log("WINNER")
+      gameWon = true
     }
 
     guessCount++
 
     if (guessCount === 7) {
-      console.log("GAME OVER")
+      gameOver = true
     }
   }
 
@@ -119,8 +118,19 @@ function App() {
     } 
   }, [guessWord])
 
+  var gameStatus = "Nick"
+  if (gameWon) {
+    gameStatus = "Win"
+  } else if (gameOver) {
+    gameStatus = "Lose"
+  }
+
   return (
     <div className="App">
+      <div>
+        <span className={`text-5xl ${gameStatus === "Lose" ? "text-red-500" : "text-lime-500"}`}>{gameStatus}</span><span className="text-5xl text-white">le</span>
+      </div>
+
       <div className="LetterGrid my-5">
         <LetterRow letterColours={firstGuessWordColours} guess={firstGuess}/>
         <LetterRow letterColours={secondGuessWordColours} guess={secondGuess}/>
@@ -130,7 +140,14 @@ function App() {
         <LetterRow letterColours={sixthGuessWordColours} guess={sixthGuess}/>
       </div>
         
-      <Keyboard onWordChange={handleWordChange} guesses={{redLetters: redGuesses, yellowLetters: yellowGuesses, greenLetters: greenGuesses}}/>
+      <div className={(gameOver || gameWon) ? `hidden` : ""}>     
+         <Keyboard onWordChange={handleWordChange} guesses={{redLetters: redGuesses, yellowLetters: yellowGuesses, greenLetters: greenGuesses}}/>
+      </div>  
+
+      <div className={(gameOver || gameWon) ? "" : `hidden`}>  
+        <button className="rounded-md text-5xl text-white bg-slate-500 p-5" onClick={window.location.reload.bind(window.location)}>Try Again?</button>
+      </div>
+
     </div>
   );
 }
