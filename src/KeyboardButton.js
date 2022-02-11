@@ -27,8 +27,13 @@ function KeyboardButton(props) {
         isGreen = true
     }
 
+    var keyWidth
+    if (props.letter !== "enter" && props.letter !== "del") {
+        keyWidth = "w-7"
+    }
+
     return (
-        <button className={`text-white m-1 p-1.5 ${getBackgroundColour()}`} onClick={handleButtonClick}>{props.letter}</button>
+        <button className={`text-2xl text-white m-1 p-1 ${getBackgroundColour()} ${keyWidth}`} onClick={handleButtonClick}>{props.letter}</button>
     );
 }
 
