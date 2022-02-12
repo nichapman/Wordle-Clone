@@ -10,6 +10,9 @@ var gameOver = false
 var gameWon = false
 
 function generateWord() {
+  //add generation based on half of the day for fixed word between users
+  let hours = new Date().getHours()
+  console.log("time: " + hours)
   let i = Math.floor(Math.random() * wordList.words.length);
   return wordList.words[i]
 }
@@ -27,6 +30,8 @@ function App() {
   const [fourthGuessWordColours, setFourthGuessWordColours] = useState("")
   const [fifthGuessWordColours, setFifthGuessWordColours] = useState("")
   const [sixthGuessWordColours, setSixthGuessWordColours] = useState("")
+
+  var guessWordColours = [firstGuessWordColours, secondGuessWordColours, thirdGuessWordColours, fourthGuessWordColours, fifthGuessWordColours, sixthGuessWordColours]
 
   const [firstGuess, setFirstGuess] = useState("")
   const [secondGuess, setSecondGuess] = useState("")
@@ -125,6 +130,44 @@ function App() {
     gameStatus = "Lose"
   }
 
+  function getShareString() {
+    return copyToClipboard(getDate() + "\n\n" + guessWordColours.map(it => convertColourStringToEmojis(it) + "\n").join(""))
+  }
+
+  function convertColourStringToEmojis(colourString) {
+    return Array.from(colourString).map(it => letterToEmoji(it)).join("")
+  }
+
+  function letterToEmoji(letter) {
+    if (letter === "R") {
+      return "🟥"
+    } else if (letter === "Y") {
+      return "🟨"
+    } else if (letter === "G") {
+      return "🟩"
+    }
+  }
+
+  function getDate() {
+    const date = new Date()
+    let hours = date.getHours()
+    
+    let dateString = `${date.toLocaleString('en-us', {  weekday: 'long' })} ${date.getDate()}${nth(date.getDate())} ${date.toLocaleString('default', { month: 'long' })}` 
+    if (hours >=0 && hours < 12) {
+      return `Early ${dateString}`
+    } else {
+      return `Late ${dateString}` 
+    }
+  }
+
+  function nth(n){return ["st","nd","rd"][(((n<0?-n:n)+90)%100-10)%10-1]||"th"}
+
+  const copyToClipboard = str => {
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText)
+      return navigator.clipboard.writeText(str);
+    return Promise.reject('The Clipboard API is not available.');
+  };
+
   return (
     <div className="App">
       <div>
@@ -145,7 +188,7 @@ function App() {
       </div>  
 
       <div className={(gameOver || gameWon) ? "" : `hidden`}>  
-        <button className="rounded-md text-5xl text-white bg-slate-500 p-5" onClick={window.location.reload.bind(window.location)}>Try Again?</button>
+        <button className="rounded-md text-5xl text-white bg-slate-500 p-5" onClick={getShareString}>Share</button>
       </div>
 
     </div>
