@@ -6,7 +6,9 @@ import wordList from './six-letter-words'
 
 // BUGS:
 // - letter on keyboard doesn't change from yellow to green after being guessed
+//  if second instance of letter doesn't exist in word, set to green else keep yellow
 // - duplicate letter guesses often show one yellow one green when only one instance of letter in mystery word
+//  
 
 var mysteryWord = generateWord().toUpperCase()
 var guessCount = 1
@@ -141,7 +143,7 @@ function App() {
   function getDate() {
     const date = new Date()
     let hours = date.getHours()
-    let dateString = `${date.toLocaleString('en-us', { weekday: 'long' })} ${date.getDate()}${nth(date.getDate())} ${date.toLocaleString('default', { month: 'long' })}` 
+    let dateString = `${date.toLocaleString('default', { month: 'long' })} ${date.getDate()}${nth(date.getDate())} ${gameWon ? `Winle ${guessCount - 1}/6` : "Losele"}` 
     return (hours >= 0 && hours < 12) ? `Early ${dateString}`: `Late ${dateString}`
   }
 
