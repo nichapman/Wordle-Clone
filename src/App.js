@@ -43,7 +43,6 @@ function App() {
   let guessColours = [firstGuessColours, secondGuessColours, thirdGuessColours, fourthGuessColours, fifthGuessColours, sixthGuessColours]
   let guessColoursSetters = [setFirstGuessColours, setSecondGuessColours, setThirdGuessColours, setFourthGuessColours, setFifthGuessColours, setSixthGuessColours]
   let guesses = [firstGuess, secondGuess, thirdGuess, fourthGuess, fifthGuess, sixthGuess]
-  let guessSetters = [setFirstGuess, setSecondGuess, setThirdGuess, setFourthGuess, setFifthGuess, setSixthGuess]
  
   function handleWordChange(letter) {
     if (letter.length === 1) {
@@ -103,6 +102,8 @@ function App() {
   }
 
   useEffect(() => {
+    const guessSetters = [setFirstGuess, setSecondGuess, setThirdGuess, setFourthGuess, setFifthGuess, setSixthGuess]
+
     if (guessCount <= 6) {
       guessSetters[guessCount-1](guessWord)
     }
@@ -116,6 +117,7 @@ function App() {
   }
 
   function getShareString() {
+    alert("Copied to clipboard")
     return copyToClipboard(`${getDate()}\n\n${guessColours.map(it => convertColourStringToEmojis(it)).join("").slice(0, -1)}`)
   }
 
@@ -167,7 +169,7 @@ function App() {
       </div>  
 
       <div className={(gameOver || gameWon) ? "" : "hidden"}>  
-        <button className="rounded-md text-5xl text-white bg-slate-500 p-5" onClick={getShareString}>Share</button>
+        <button className="rounded-md text-4xl text-white bg-slate-500 p-2" onClick={getShareString}>Share</button>
       </div>
     </div>
   );
