@@ -4,15 +4,17 @@ import Keyboard from './Keyboard'
 import {useEffect, useState} from 'react'
 import wordList from './six-letter-words'
 
-var mysteryWord = generateWord().toUpperCase()
+// BUGS:
+// - letter on keyboard doesn't change from yellow to green after being guessed
+// - duplicate letter guesses often show one yellow one green when only one instance of letter in mystery word
+
+var mysteryWord = "QQQQQQ"//generateWord().toUpperCase()
 var guessCount = 1
 var gameOver = false
 var gameWon = false
 
 function generateWord() {
-  //add generation based on half of the day for fixed word between users
-  let hours = new Date().getHours()
-  console.log("time: " + hours)
+  //generate based on half of the day for fixed word between users
   let i = Math.floor(Math.random() * wordList.words.length);
   return wordList.words[i]
 }
@@ -24,14 +26,12 @@ function App() {
   const [yellowGuesses, setYellowGuesses] = useState("")
   const [greenGuesses, setGreenGuesses] = useState("")
 
-  const [firstGuessWordColours, setFirstGuessWordColours] = useState("")
-  const [secondGuessWordColours, setSecondGuessWordColours] = useState("")
-  const [thirdGuessWordColours, setThirdGuessWordColours] = useState("")
-  const [fourthGuessWordColours, setFourthGuessWordColours] = useState("")
-  const [fifthGuessWordColours, setFifthGuessWordColours] = useState("")
-  const [sixthGuessWordColours, setSixthGuessWordColours] = useState("")
-
-  var guessWordColours = [firstGuessWordColours, secondGuessWordColours, thirdGuessWordColours, fourthGuessWordColours, fifthGuessWordColours, sixthGuessWordColours]
+  const [firstGuessColours, setFirstGuessColours] = useState("")
+  const [secondGuessColours, setSecondGuessColours] = useState("")
+  const [thirdGuessColours, setThirdGuessColours] = useState("")
+  const [fourthGuessColours, setFourthGuessColours] = useState("")
+  const [fifthGuessColours, setFifthGuessColours] = useState("")
+  const [sixthGuessColours, setSixthGuessColours] = useState("")
 
   const [firstGuess, setFirstGuess] = useState("")
   const [secondGuess, setSecondGuess] = useState("")
@@ -39,6 +39,11 @@ function App() {
   const [fourthGuess, setFourthGuess] = useState("")
   const [fifthGuess, setFifthGuess] = useState("")
   const [sixthGuess, setSixthGuess] = useState("")
+
+  let guessColours = [firstGuessColours, secondGuessColours, thirdGuessColours, fourthGuessColours, fifthGuessColours, sixthGuessColours]
+  let guessColoursSetters = [setFirstGuessColours, setSecondGuessColours, setThirdGuessColours, setFourthGuessColours, setFifthGuessColours, setSixthGuessColours]
+  let guesses = [firstGuess, secondGuess, thirdGuess, fourthGuess, fifthGuess, sixthGuess]
+  let guessSetters = [setFirstGuess, setSecondGuess, setThirdGuess, setFourthGuess, setFifthGuess, setSixthGuess]
  
   function handleWordChange(letter) {
     if (letter.length === 1) {
@@ -59,37 +64,37 @@ function App() {
     let newGreenGuesses = ""
     let newYellowGuesses = ""
     let newRedGuesses = ""
-    let newGuessWordColours = ""
+    let newGuessColours = ""
     let guessArray = Array.from(guessWord)
 
     for (let i = 0; i < guessArray.length; i++) { 
       let letter = guessArray[i]
       if (mysteryWord.includes(letter)) {
         if (mysteryWord[i] === guessArray[i]) {
-          newGuessWordColours += "G"
+          newGuessColours += "G"
           newGreenGuesses += guessWord[i]
         } else {
-          newGuessWordColours += "Y"
+          newGuessColours += "Y"
           newYellowGuesses += guessWord[i]
         }
       } else {
-        newGuessWordColours += "R"
+        newGuessColours += "R"
         newRedGuesses += guessWord[i]
       }
     }
 
     if (guessCount === 1) {
-      setFirstGuessWordColours(newGuessWordColours)
+      setFirstGuessColours(newGuessColours)
     } else if (guessCount === 2) {
-      setSecondGuessWordColours(newGuessWordColours)
+      setSecondGuessColours(newGuessColours)
     } else if (guessCount === 3) {
-      setThirdGuessWordColours(newGuessWordColours)
+      setThirdGuessColours(newGuessColours)
     } else if (guessCount === 4) {
-      setFourthGuessWordColours(newGuessWordColours)
+      setFourthGuessColours(newGuessColours)
     } else if (guessCount === 5) {
-      setFifthGuessWordColours(newGuessWordColours)
+      setFifthGuessColours(newGuessColours)
     } else if (guessCount === 6) {
-      setSixthGuessWordColours(newGuessWordColours)
+      setSixthGuessColours(newGuessColours)
     } 
 
     setRedGuesses(redGuesses + newRedGuesses)
@@ -131,33 +136,32 @@ function App() {
   }
 
   function getShareString() {
-    return copyToClipboard(getDate() + "\n\n" + guessWordColours.map(it => convertColourStringToEmojis(it) + "\n").join(""))
+    return copyToClipboard(`${getDate()}\n\n${guessColours.map(it => convertColourStringToEmojis(it)).join("").slice(0, -1)}`)
   }
 
   function convertColourStringToEmojis(colourString) {
-    return Array.from(colourString).map(it => letterToEmoji(it)).join("")
+    if (colourString === undefined || colourString.length === 0) return ""
+    return Array.from(colourString).map(it => letterToEmoji(it)).join("") + "\n"
   }
 
   function letterToEmoji(letter) {
-    if (letter === "R") {
-      return "🟥"
-    } else if (letter === "Y") {
-      return "🟨"
-    } else if (letter === "G") {
-      return "🟩"
+    switch(letter) {
+      case "R":
+        return "🟥"
+      case "Y":
+        return "🟨"
+      case "G":
+        return "🟩"
+      default: 
+        return
     }
   }
 
   function getDate() {
     const date = new Date()
     let hours = date.getHours()
-    
-    let dateString = `${date.toLocaleString('en-us', {  weekday: 'long' })} ${date.getDate()}${nth(date.getDate())} ${date.toLocaleString('default', { month: 'long' })}` 
-    if (hours >=0 && hours < 12) {
-      return `Early ${dateString}`
-    } else {
-      return `Late ${dateString}` 
-    }
+    let dateString = `${date.toLocaleString('en-us', { weekday: 'long' })} ${date.getDate()}${nth(date.getDate())} ${date.toLocaleString('default', { month: 'long' })}` 
+    return (hours >= 0 && hours < 12) ? `Early ${dateString}`: `Late ${dateString}`
   }
 
   function nth(n){return ["st","nd","rd"][(((n<0?-n:n)+90)%100-10)%10-1]||"th"}
@@ -175,22 +179,16 @@ function App() {
       </div>
 
       <div className="LetterGrid my-5">
-        <LetterRow letterColours={firstGuessWordColours} guess={firstGuess}/>
-        <LetterRow letterColours={secondGuessWordColours} guess={secondGuess}/>
-        <LetterRow letterColours={thirdGuessWordColours} guess={thirdGuess}/>
-        <LetterRow letterColours={fourthGuessWordColours} guess={fourthGuess}/>
-        <LetterRow letterColours={fifthGuessWordColours} guess={fifthGuess}/>
-        <LetterRow letterColours={sixthGuessWordColours} guess={sixthGuess}/>
+        {guesses.map((it, index) => <LetterRow key={index} letterColours={guessColours[index]} guess={it}/>)}
       </div>
         
-      <div className={(gameOver || gameWon) ? `hidden` : ""}>     
+      <div className={(gameOver || gameWon) ? "hidden" : ""}>     
          <Keyboard onWordChange={handleWordChange} guesses={{redLetters: redGuesses, yellowLetters: yellowGuesses, greenLetters: greenGuesses}}/>
       </div>  
 
-      <div className={(gameOver || gameWon) ? "" : `hidden`}>  
+      <div className={(gameOver || gameWon) ? "" : "hidden"}>  
         <button className="rounded-md text-5xl text-white bg-slate-500 p-5" onClick={getShareString}>Share</button>
       </div>
-
     </div>
   );
 }
