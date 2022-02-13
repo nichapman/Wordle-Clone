@@ -8,7 +8,7 @@ import wordList from './six-letter-words'
 // - letter on keyboard doesn't change from yellow to green after being guessed
 // - duplicate letter guesses often show one yellow one green when only one instance of letter in mystery word
 
-var mysteryWord = "QQQQQQ"//generateWord().toUpperCase()
+var mysteryWord = generateWord().toUpperCase()
 var guessCount = 1
 var gameOver = false
 var gameWon = false
