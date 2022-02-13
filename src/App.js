@@ -117,8 +117,7 @@ function App() {
   }
 
   function getShareString() {
-    alert("Copied to clipboard")
-    return copyToClipboard(`${getDate()}\n\n${guessColours.map(it => convertColourStringToEmojis(it)).join("").slice(0, -1)}`)
+    return openShareDialog({text: `${getDate()}\n\n${guessColours.map(it => convertColourStringToEmojis(it)).join("").slice(0, -1)}`})
   }
 
   function convertColourStringToEmojis(colourString) {
@@ -148,10 +147,10 @@ function App() {
 
   function nth(n){return ["st","nd","rd"][(((n<0?-n:n)+90)%100-10)%10-1]||"th"}
 
-  const copyToClipboard = str => {
-    if (navigator && navigator.clipboard && navigator.clipboard.writeText)
-      return navigator.clipboard.writeText(str);
-    return Promise.reject('The Clipboard API is not available.');
+  const openShareDialog = str => {
+    if (navigator && navigator.share)
+      return navigator.share(str)
+    return Promise.reject('The Share API is not available.');
   };
 
   return (
