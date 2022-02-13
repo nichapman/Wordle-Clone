@@ -83,19 +83,9 @@ function App() {
       }
     }
 
-    if (guessCount === 1) {
-      setFirstGuessColours(newGuessColours)
-    } else if (guessCount === 2) {
-      setSecondGuessColours(newGuessColours)
-    } else if (guessCount === 3) {
-      setThirdGuessColours(newGuessColours)
-    } else if (guessCount === 4) {
-      setFourthGuessColours(newGuessColours)
-    } else if (guessCount === 5) {
-      setFifthGuessColours(newGuessColours)
-    } else if (guessCount === 6) {
-      setSixthGuessColours(newGuessColours)
-    } 
+    if (guessCount <= 6) {
+      guessColoursSetters[guessCount-1](newGuessColours)
+    }
 
     setRedGuesses(redGuesses + newRedGuesses)
     setYellowGuesses(yellowGuesses + newYellowGuesses)
@@ -113,19 +103,9 @@ function App() {
   }
 
   useEffect(() => {
-    if (guessCount === 1) {
-      setFirstGuess(guessWord)
-    } else if (guessCount === 2) {
-      setSecondGuess(guessWord)
-    } else if (guessCount === 3) {
-      setThirdGuess(guessWord)
-    } else if (guessCount === 4) {
-      setFourthGuess(guessWord)
-    } else if (guessCount === 5) {
-      setFifthGuess(guessWord)
-    } else if (guessCount === 6) {
-      setSixthGuess(guessWord)
-    } 
+    if (guessCount <= 6) {
+      guessSetters[guessCount-1](guessWord)
+    }
   }, [guessWord])
 
   var gameStatus = "Nick"
