@@ -7,3 +7,5 @@ Pending additions:
 - Fix words per 12 hour period
   - Add countdown to next word release
 - Add score tracking (cookie?)
+- Add component tests
+  - Configure workflow to run tests on new commits to master/merge requests?
