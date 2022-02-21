@@ -19,6 +19,7 @@ function KeyboardButton(props) {
         }
     }
 
+    // change order of these? to eliminate bug
     if (props.guesses.redLetters.includes(props.letter)) {
         isRed = true
     } else if (props.guesses.yellowLetters.includes(props.letter)) {
