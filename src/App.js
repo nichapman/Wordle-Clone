@@ -45,6 +45,7 @@ function App() {
   let guessColours = [firstGuessColours, secondGuessColours, thirdGuessColours, fourthGuessColours, fifthGuessColours, sixthGuessColours]
   let guessColoursSetters = [setFirstGuessColours, setSecondGuessColours, setThirdGuessColours, setFourthGuessColours, setFifthGuessColours, setSixthGuessColours]
   let guesses = [firstGuess, secondGuess, thirdGuess, fourthGuess, fifthGuess, sixthGuess]
+  let guessSetters = [setFirstGuess, setSecondGuess, setThirdGuess, setFourthGuess, setFifthGuess, setSixthGuess]
  
   function handleWordChange(letter) {
     if (letter.length === 1) {
@@ -59,9 +60,22 @@ function App() {
     }
   }
 
-  function evaluateGuess(guessWord) {
-    //check if word in dictionary?
-    
+  async function wordExists(guessWord) {
+    const response = await fetch(`https://api.wordnik.com/v4/word.json/${guessWord.toLowerCase()}/scrabbleScore?api_key=${process.env.REACT_APP_KEY}`)
+    const body = await response.json()
+    if (!body.value) {
+      alert("Word not valid")
+      guessSetters[guessCount-1]("")
+      return false
+    }
+    return true
+  }
+
+  async function evaluateGuess(guessWord) {
+    if (process.env.NODE_ENV === "development") {
+      if (!(await wordExists(guessWord))) return 
+    }
+
     let newGreenGuesses = ""
     let newYellowGuesses = ""
     let newRedGuesses = ""
@@ -104,9 +118,7 @@ function App() {
   }
 
   useEffect(() => {
-    const guessSetters = [setFirstGuess, setSecondGuess, setThirdGuess, setFourthGuess, setFifthGuess, setSixthGuess]
-
-    if (guessCount <= 6) {
+    if (guessCount <= 6 && guessWord !== "") {
       guessSetters[guessCount-1](guessWord)
     }
   }, [guessWord])
