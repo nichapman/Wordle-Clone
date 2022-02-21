@@ -8,7 +8,6 @@ import wordList from './six-letter-words'
 // - letter on keyboard doesn't change from yellow to green after being guessed
 //  if second instance of letter doesn't exist in word, set to green else keep yellow
 // - duplicate letter guesses often show one yellow one green when only one instance of letter in mystery word
-//  
 
 var mysteryWord = generateWord().toUpperCase()
 var guessCount = 1
@@ -28,25 +27,15 @@ function App() {
   const [yellowGuesses, setYellowGuesses] = useState("")
   const [greenGuesses, setGreenGuesses] = useState("")
 
-  const [firstGuessColours, setFirstGuessColours] = useState("")
-  const [secondGuessColours, setSecondGuessColours] = useState("")
-  const [thirdGuessColours, setThirdGuessColours] = useState("")
-  const [fourthGuessColours, setFourthGuessColours] = useState("")
-  const [fifthGuessColours, setFifthGuessColours] = useState("")
-  const [sixthGuessColours, setSixthGuessColours] = useState("")
-
-  const [firstGuess, setFirstGuess] = useState("")
-  const [secondGuess, setSecondGuess] = useState("")
-  const [thirdGuess, setThirdGuess] = useState("")
-  const [fourthGuess, setFourthGuess] = useState("")
-  const [fifthGuess, setFifthGuess] = useState("")
-  const [sixthGuess, setSixthGuess] = useState("")
-
-  let guessColours = [firstGuessColours, secondGuessColours, thirdGuessColours, fourthGuessColours, fifthGuessColours, sixthGuessColours]
-  let guessColoursSetters = [setFirstGuessColours, setSecondGuessColours, setThirdGuessColours, setFourthGuessColours, setFifthGuessColours, setSixthGuessColours]
-  let guesses = [firstGuess, secondGuess, thirdGuess, fourthGuess, fifthGuess, sixthGuess]
-  let guessSetters = [setFirstGuess, setSecondGuess, setThirdGuess, setFourthGuess, setFifthGuess, setSixthGuess]
+  const [guessColours, setGuessColours] = useState(["", "", "", "", "", ""])
+  const [guesses, setGuesses] = useState(["", "", "", "", "", ""])
  
+  function updateGuessesObjects(index, guess, setObject) {
+    const newGuesses = [...guesses];
+    newGuesses[index] = guess;
+    setObject(newGuesses);
+  }
+
   function handleWordChange(letter) {
     if (letter.length === 1) {
       if (guessWord.length === 6) { return } //limit to 6 letters input
@@ -65,7 +54,7 @@ function App() {
     const body = await response.json()
     if (!body.value) {
       alert("Word not valid")
-      guessSetters[guessCount-1]("")
+      updateGuessesObjects(guessCount-1, "", setGuesses)
       return false
     }
     return true
@@ -99,7 +88,7 @@ function App() {
     }
 
     if (guessCount <= 6) {
-      guessColoursSetters[guessCount-1](newGuessColours)
+      updateGuessesObjects(guessCount-1, newGuessColours, setGuessColours)
     }
 
     setRedGuesses(redGuesses + newRedGuesses)
@@ -119,7 +108,7 @@ function App() {
 
   useEffect(() => {
     if (guessCount <= 6 && guessWord !== "") {
-      guessSetters[guessCount-1](guessWord)
+      updateGuessesObjects(guessCount-1, guessWord, setGuesses)
     }
   }, [guessWord])
 
