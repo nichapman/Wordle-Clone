@@ -30,10 +30,16 @@ function App() {
   const [guessColours, setGuessColours] = useState(["", "", "", "", "", ""])
   const [guesses, setGuesses] = useState(["", "", "", "", "", ""])
  
-  function updateGuessesObjects(index, guess, setObject) {
+  function updateGuessList(index, guess) {
     const newGuesses = [...guesses];
     newGuesses[index] = guess;
-    setObject(newGuesses);
+    setGuesses(newGuesses);
+  }
+
+  function updateColoursList(index, colours) {
+    const newColours = [...guessColours];
+    newColours[index] = colours;
+    setGuessColours(newColours);
   }
 
   function handleWordChange(letter) {
@@ -45,26 +51,10 @@ function App() {
     } else if (letter === "enter") {
       if (guessWord.length < 6) { return } //only allow guess when it's 6 letters long
       evaluateGuess(guessWord)
-      setGuessWord("")
     }
-  }
-
-  async function wordExists(guessWord) {
-    const response = await fetch(`https://api.wordnik.com/v4/word.json/${guessWord.toLowerCase()}/scrabbleScore?api_key=${process.env.REACT_APP_KEY}`)
-    const body = await response.json()
-    if (!body.value) {
-      alert("Word not valid")
-      updateGuessesObjects(guessCount-1, "", setGuesses)
-      return false
-    }
-    return true
   }
 
   async function evaluateGuess(guessWord) {
-    if (process.env.NODE_ENV === "development") {
-      if (!(await wordExists(guessWord))) return 
-    }
-
     let newGreenGuesses = ""
     let newYellowGuesses = ""
     let newRedGuesses = ""
@@ -73,7 +63,7 @@ function App() {
 
     for (let i = 0; i < guessArray.length; i++) { 
       let letter = guessArray[i]
-      if (mysteryWord.includes(letter)) {
+      if (mysteryWord.includes(letter)) { // && hasn't been guessed green 
         if (mysteryWord[i] === guessArray[i]) {
           newGuessColours += "G"
           newGreenGuesses += guessWord[i]
@@ -87,8 +77,23 @@ function App() {
       }
     }
 
+    // for each letter in guess:
+    //   if letter is in mystery word:
+    //     if position of letter matches letter in mystery word: green
+    //     else: yellow
+    //   else: red
+
+    // if letter only in word once but guess has two of letter: only have green for correct and red for other
+
+    // keep a count of each letter in guess and it's occurrence in mystery word
+    //  A R O M A S
+    //  A R R O W S
+    //
+    //  A R R O W S
+    //  2 1 1 1 0 1
+
     if (guessCount <= 6) {
-      updateGuessesObjects(guessCount-1, newGuessColours, setGuessColours)
+      updateColoursList(guessCount-1, newGuessColours)
     }
 
     setRedGuesses(redGuesses + newRedGuesses)
@@ -104,11 +109,13 @@ function App() {
     if (guessCount === 7) {
       gameOver = true
     }
+
+    setGuessWord("")
   }
 
   useEffect(() => {
-    if (guessCount <= 6 && guessWord !== "") {
-      updateGuessesObjects(guessCount-1, guessWord, setGuesses)
+    if (guessCount <= 6) {
+      updateGuessList(guessCount-1, guessWord)
     }
   }, [guessWord])
 
